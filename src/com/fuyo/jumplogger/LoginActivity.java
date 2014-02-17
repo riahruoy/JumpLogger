@@ -101,14 +101,5 @@ public class LoginActivity extends Activity {
         
     }
 
-    public static String hashPassword(String pass) {
-    	String passwithsalt = pass + pass + "*jumplogger";
-    	String encoded = Base64.encodeToString(passwithsalt.getBytes(), Base64.DEFAULT);
-    	char[] chars = encoded.toCharArray();
-    	for (int i = 0; i < encoded.length(); i += 2) {
-    		chars[i] = 'A';
-    	}
-    	return new String(chars);
-    }
     
 }

@@ -31,7 +31,7 @@ public class CreateAccountAsyncTask extends AsyncTask<String, Integer, String> {
 	CreateAccountAsyncTask(Context context, final String email, final String password, final OnCompleteListener listener) {
 		this.context = context;
 		this.email = email;
-		this.password = LoginActivity.hashPassword(password);
+		this.password = password;
 		onCompleteListener = listener;
 		url = context.getResources().getString(R.string.url_entry);
 	}
