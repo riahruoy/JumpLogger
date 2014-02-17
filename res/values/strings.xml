@@ -6,8 +6,8 @@
     <string name="activity_title_login">ログイン</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="url_passcheck">https://jumplogger.iijuf.net/api/passcheck.php</string>
-    <string name="url_entry">https://jumplogger.iijuf.net/api/entryexe.php</string>
-    <string name="url_upload">https://jumplogger.iijuf.net/api/uploadFile.php</string>
+    <string name="url_passcheck">http://jumplogger.iijuf.net/api/passcheck.php</string>
+    <string name="url_entry">http://jumplogger.iijuf.net/api/entryexe.php</string>
+    <string name="url_upload">http://jumplogger.iijuf.net/api/uploadFile.php</string>
 
 </resources>

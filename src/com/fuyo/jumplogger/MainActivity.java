@@ -194,7 +194,6 @@ public class MainActivity extends Activity {
 					FileWriter fileWriter = new FileWriter(file, true);
 					fileWriter.write(logTimeSdf.format(Calendar.getInstance().getTime()) + ",out\n");
 					fileWriter.close();
-					Toast.makeText(MainActivity.this, "外に出ました", Toast.LENGTH_SHORT).show();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -251,7 +250,7 @@ public class MainActivity extends Activity {
 							finish();
 						}
 					})
-					.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+					.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {

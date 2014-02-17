@@ -11,6 +11,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,7 +42,7 @@ public class LoginActivity extends Activity {
         if (sharedPref.contains("email") && sharedPref.contains("password")) {
         	editEmail.setText(sharedPref.getString("email", ""));
         	editPassword.setText(sharedPref.getString("password", ""));
-        	buttonRegister.setVisibility(Button.INVISIBLE);
+//        	.setVisibility(Button.INVISIBLE);
         }
  
         
@@ -100,5 +101,14 @@ public class LoginActivity extends Activity {
         
     }
 
+    public static String hashPassword(String pass) {
+    	String passwithsalt = pass + pass + "*jumplogger";
+    	String encoded = Base64.encodeToString(passwithsalt.getBytes(), Base64.DEFAULT);
+    	char[] chars = encoded.toCharArray();
+    	for (int i = 0; i < encoded.length(); i += 2) {
+    		chars[i] = 'A';
+    	}
+    	return new String(chars);
+    }
     
 }

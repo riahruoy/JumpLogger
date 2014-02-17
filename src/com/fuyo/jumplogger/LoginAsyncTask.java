@@ -31,7 +31,7 @@ public class LoginAsyncTask extends AsyncTask<String, Integer, String> {
 	LoginAsyncTask(Context context, final String email, final String password, final OnCompleteListener listener) {
 		this.context = context;
 		this.email = email;
-		this.password = password;
+		this.password = LoginActivity.hashPassword(password);
 		onCompleteListener = listener;
 		url = context.getResources().getString(R.string.url_passcheck);
 	}

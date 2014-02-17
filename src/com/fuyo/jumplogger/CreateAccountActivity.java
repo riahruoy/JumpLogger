@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class CreateAccountActivity extends Activity {
@@ -74,6 +75,7 @@ public class CreateAccountActivity extends Activity {
 								@Override
 								void onSuccess() {
 									Log.d("login", "passcheck OK");
+									Toast.makeText(CreateAccountActivity.this, "create account OK", Toast.LENGTH_SHORT).show();
 							        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 						        	Editor e = sharedPref.edit();
 						        	e.putString("email", email);
@@ -84,6 +86,7 @@ public class CreateAccountActivity extends Activity {
 								@Override
 								void onFailure() {
 									Log.d("login", "passcheck NG");
+									Toast.makeText(CreateAccountActivity.this, "create account failed", Toast.LENGTH_SHORT).show();
 									editEmail.setBackgroundColor(Color.parseColor(ngColor));
 									editEmail2.setBackgroundColor(Color.parseColor(ngColor));
 									editPassword.setBackgroundColor(Color.parseColor(ngColor));
