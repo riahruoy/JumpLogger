@@ -26,13 +26,14 @@ public class CreateAccountAsyncTask extends AsyncTask<String, Integer, String> {
 	final OnCompleteListener onCompleteListener;
 	final String email;
 	final String password;
-	final String url = "https://iijuf.net/location/api/entryexe.php";
+	final String url;
 	ProgressDialog dialog = null;
 	CreateAccountAsyncTask(Context context, final String email, final String password, final OnCompleteListener listener) {
 		this.context = context;
 		this.email = email;
 		this.password = password;
 		onCompleteListener = listener;
+		url = context.getResources().getString(R.string.url_entry);
 	}
 	@Override
 	protected String doInBackground(String... params) {
