@@ -72,6 +72,7 @@ public class LogUploader extends IntentService {
 			if (!baseDir.isDirectory()) throw new Exception("directory not found : " + uploadDir);
 			
 			List<File> originalLogFiles = new ArrayList<File>();
+			List<String> labels = new ArrayList<String>();
 
 			//calcurate total size to be uploaded (uncompressed)
 			long totalSizeOfLogFile = 0;
@@ -83,6 +84,7 @@ public class LogUploader extends IntentService {
 					if (files[j].length() > 0) {
 						totalSizeOfLogFile += files[j].length();
 						originalLogFiles.add(files[j]);
+						labels.add(dayDir.getName());
 					} else {
 						files[j].delete();
 					}
@@ -114,12 +116,15 @@ public class LogUploader extends IntentService {
 			Log.d("upload", "original : " + totalSizeOfLogFile + " byte , compressed : " + totalSizeToBeUploaded + " byte (" + Math.round(totalSizeToBeUploaded * 100/ totalSizeOfLogFile) + " %)");
 			final String accessId = intent.getStringExtra("accessId");
 
+			Log.d("upload", "label:" + labels.size() + ", log:" + compressedLogFiles.size());
 			long totalByteSent = 0;
-			for (File file : compressedLogFiles) {
+			for (int i = 0; i < compressedLogFiles.size(); i++) {
+				File file = compressedLogFiles.get(i);
+				String label = labels.get(i);
 				updateNotification("uploading...(" + Math.round(totalByteSent /1000) + "/" + Math.round(totalSizeToBeUploaded / 1000)
 						+ "KB, " +Math.round(totalByteSent * 100 / totalSizeToBeUploaded) + "%)");
 				long fileSize = file.length();
-				uploadFile(file, accessId);
+				uploadFile(file, accessId, label);
 				totalByteSent +=  fileSize;
 			}
 			
@@ -143,14 +148,14 @@ public class LogUploader extends IntentService {
 		}
 	}
 	
-	private void uploadFile(final File file, final String accessId) {
+	private void uploadFile(final File file, final String accessId, final String label) {
 		HttpParams httpParams = new BasicHttpParams();
 		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, Integer.valueOf(10000));
 		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, Integer.valueOf(30000));
 		HttpClient httpClient = new DefaultHttpClient(httpParams);
 
 		try {
-			HttpPost httpPost = new HttpPost(url + "?user=" + URLEncoder.encode(email, "UTF-8") + "&pass=" + URLEncoder.encode(password, "UTF-8"));
+			HttpPost httpPost = new HttpPost(url + "?user=" + URLEncoder.encode(email, "UTF-8") + "&pass=" + URLEncoder.encode(password, "UTF-8") + "&label="+URLEncoder.encode(label, "UTF-8"));
 			final MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 			FileBody fileBody = new FileBody(file, "text/plain");
 			reqEntity.addPart("upfile", fileBody);
