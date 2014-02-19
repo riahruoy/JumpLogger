@@ -35,7 +35,7 @@ public class LocationLogger extends AbstractLogger{
 			}
 		};
 		this.locationManager = locationManager;
-//		logDataBase.writeLogHeader("Latitude,Longitude,Altitude,Accuracy,Speed,Bearing");
+		logDataBase.writeLogHeader("Latitude,Longitude,Altitude,Accuracy,Speed,Bearing");
 		
 	}
 

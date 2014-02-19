@@ -28,7 +28,7 @@ public class SensorLogger extends AbstractLogger {
 		sensor = sensors.get(0);
 		
 		
-//		logDataBase.writeLogHeader(getHeader(type));
+		logDataBase.writeLogHeader(getHeader(type));
 		
 		sensorEventListener = new SensorEventListener() {
 			@Override

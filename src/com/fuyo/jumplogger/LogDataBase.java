@@ -76,6 +76,20 @@ public class LogDataBase {
 	public String getLogDir() {
 		return logDir;
 	}
+	public void writeLogHeader(String str) {
+		if (isFileLogging) {
+			if (logFile.length() > 0) {
+				//append mode
+				//header is already written;
+			} else {
+				try {
+					logWriter.write("Date," + str + "\n");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 	public void add(String str) {
 		StringBuffer stringBuffer = new StringBuffer();
 		Date nowDate = Calendar.getInstance().getTime();
