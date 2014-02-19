@@ -43,22 +43,11 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	Button startButton;
 	Button stopButton;
-	Button goinButton;
-	Button gooutButton;
-	CheckBox gpsCheckBox;
-	CheckBox ssidCheckBox;
-	CheckBox accelCheckBox;
-	CheckBox nwCheckBox;
-	CheckBox nwLowEnergyCheckBox;
-	boolean isOut = true;
 	TextView logTextView;
 	BroadcastReceiver logReceiver;
 	IntentFilter logIntentFilter;
 	SharedPreferences sharedPref;
-    private final SimpleDateFormat logTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.JAPAN); //SimpleDataFormat is not thread-safe. Don't make it static.
-    private final String APK_URL = "http://";
     private static final int MENU_ID_MENU1 = (Menu.FIRST);
-	private static final String goinFileName = "building.txt"; 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +61,6 @@ public class MainActivity extends Activity {
         	e.commit();
         }
         final String id = sharedPref.getString("id", "id_error");
-        boolean isLogGPS = sharedPref.getBoolean("isLogGPS", false);
-        boolean isLogSSID = sharedPref.getBoolean("isLogSSID", false);
-        boolean isLogAccel = sharedPref.getBoolean("isLogAccel", false);
-        boolean isLogNW = sharedPref.getBoolean("isLogNW", true);
-        boolean isLowEnergyNW = sharedPref.getBoolean("isLowEnergyNW", true);
         
         TextView tv = (TextView)findViewById(R.id.idTextView);
         tv.setText("http://overtone.nilab.ecl.ntt.co.jp/~fujii/datacollect/logList.php?accessId=" + id);
@@ -93,64 +77,9 @@ public class MainActivity extends Activity {
         	
         };
         
-        nwCheckBox = (CheckBox)findViewById(R.id.checkBoxNWFlag);
-        nwCheckBox.setChecked(isLogNW);
-        nwCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor e = sharedPref.edit();
-				e.putBoolean("isLogNW", isChecked);
-				e.commit();
-			}
-		});
-        nwLowEnergyCheckBox = (CheckBox)findViewById(R.id.checkBoxLowEnergyFlag);
-        nwLowEnergyCheckBox.setChecked(isLowEnergyNW);
-        nwLowEnergyCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor e = sharedPref.edit();
-				e.putBoolean("isLowEnergyNW", isChecked);
-				e.commit();
-			}
-		});
-
-        gpsCheckBox = (CheckBox)findViewById(R.id.checkBoxGPSFlag);
-        gpsCheckBox.setChecked(isLogGPS);
-        gpsCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor e = sharedPref.edit();
-				e.putBoolean("isLogGPS", isChecked);
-				e.commit();
-			}
-		});
-        ssidCheckBox = (CheckBox)findViewById(R.id.CheckBoxSSID);
-        ssidCheckBox.setChecked(isLogSSID);
-        ssidCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor e = sharedPref.edit();
-				e.putBoolean("isLogSSID", isChecked);
-				e.commit();
-			}
-		});
-        accelCheckBox = (CheckBox)findViewById(R.id.CheckBoxAccel);
-        accelCheckBox.setChecked(isLogAccel);
-        accelCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor e = sharedPref.edit();
-				e.putBoolean("isLogAccel", isChecked);
-				e.commit();
-			}
-		});
         
         startButton = (Button)findViewById(R.id.startService);
         stopButton = (Button)findViewById(R.id.stopService);
-        goinButton = (Button)findViewById(R.id.goinButton);
-        gooutButton = (Button)findViewById(R.id.gooutButton);
         startButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				onCheckFinish(true);
@@ -164,41 +93,6 @@ public class MainActivity extends Activity {
 				setInputEnabled(false);
 			}
 		});
-        goinButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN);
-		        String prefix = sdf.format(Calendar.getInstance().getTime());
-		        String logDir = Environment.getExternalStorageDirectory().getPath() + "/logDir/" + prefix + "/";
-				File file = new File(logDir + goinFileName);
-				try {
-					FileWriter fileWriter = new FileWriter(file, true);
-					fileWriter.write(logTimeSdf.format(Calendar.getInstance().getTime()) + ",in\n");
-					fileWriter.close();
-					Toast.makeText(MainActivity.this, "goin" +
-							"", Toast.LENGTH_SHORT).show();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-        gooutButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN);
-		        String prefix = sdf.format(Calendar.getInstance().getTime());
-		        String logDir = Environment.getExternalStorageDirectory().getPath() + "/logDir/" + prefix + "/";
-				File file = new File(logDir + goinFileName);
-				try {
-					FileWriter fileWriter = new FileWriter(file, true);
-					fileWriter.write(logTimeSdf.format(Calendar.getInstance().getTime()) + ",out\n");
-					fileWriter.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
         
         Button uploadButton = (Button)findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(new OnClickListener() {
@@ -208,6 +102,8 @@ public class MainActivity extends Activity {
 		    	Intent intent = new Intent(MainActivity.this, LogUploader.class);
 
 		    	intent.putExtra("accessId", id);
+		    	intent.putExtra("email", sharedPref.getString("email", "error_email"));
+		    	intent.putExtra("password", sharedPref.getString("password", "error_pass"));
 		    	MainActivity.this.startService(intent);
 			}
 		});
@@ -261,7 +157,7 @@ public class MainActivity extends Activity {
 				
 			}
 		});
-        ucat.execute(new String[]{});
+//        ucat.execute(new String[]{});
     }
 
     @Override
@@ -285,13 +181,6 @@ public class MainActivity extends Activity {
     private void setInputEnabled(boolean isLoggingStarted) {
 		startButton.setEnabled(!isLoggingStarted);
 		stopButton.setEnabled(isLoggingStarted);
-		nwCheckBox.setEnabled(!isLoggingStarted);
-		nwLowEnergyCheckBox.setEnabled(!isLoggingStarted);
-		gpsCheckBox.setEnabled(!isLoggingStarted);
-		ssidCheckBox.setEnabled(!isLoggingStarted);
-		accelCheckBox.setEnabled(!isLoggingStarted);
-		goinButton.setEnabled(isLoggingStarted);
-		gooutButton.setEnabled(isLoggingStarted);
     }
     
     public void onCheckFinish(boolean nwEnabled) {

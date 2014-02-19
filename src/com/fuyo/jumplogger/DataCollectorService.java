@@ -51,50 +51,17 @@ public class DataCollectorService extends Service {
     SensorManager sensorManager;
     private static final int NOTIFICATION_ID = 1;
     private Notification notification;
-    private boolean isLogGPS = true;
-    private boolean isLogNW = true;
-    private boolean isLogAccel = true;
-    private boolean isLogSSID = true;
-    private boolean isLogSound = true;
-    private boolean isLogBluetooth = true;
-    private boolean isLogArduino = true;
     private LoggerManager loggers;
     private String accessId = "id_error";
+    private SharedPreferences sharedPref;
     public static final String INTENT_ACTION = "LOGDATA_SHOW";
     
-    private Thread showThread;
-    private boolean showThreadFlag;
 
     @Override
     public void onCreate() {
         Log.i(TAG, "onCreate");
         Toast.makeText(this, "Start Logging...", Toast.LENGTH_SHORT).show();
 
-        showThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (showThreadFlag) {
-					for (int i = 0; i < 10; i++) {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						if (!showThreadFlag) { 
-							break;
-						}
-					}
-					//TODO should use AIDL??
-					Intent broadcastIntent = new Intent();
-					String str = loggers.getLogMessage();
-					broadcastIntent.putExtra("message", str);
-					broadcastIntent.setAction(INTENT_ACTION);
-					DataCollectorService.this.sendBroadcast(broadcastIntent);
-				}
-			}
-        	
-        });
 		
     }
 
@@ -119,43 +86,29 @@ public class DataCollectorService extends Service {
     
 	@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         accessId = sharedPref.getString("id", "id_error");
-        isLogGPS = sharedPref.getBoolean("isLogGPS", true);
-        isLogNW = sharedPref.getBoolean("isLogNW", true);
-        isLogAccel = sharedPref.getBoolean("isLogAccel", true);
-        isLogSSID = sharedPref.getBoolean("isLogSSID", true);
-        
-        if (intent != null) {
-    		accessId = intent.getExtras().getString("id");
-    		isLogGPS = intent.getExtras().getBoolean("isLogGPS");
-    		isLogSSID = intent.getExtras().getBoolean("isLogSSID");
-    		isLogAccel = intent.getExtras().getBoolean("isLogAccel");
-    		isLogNW = intent.getExtras().getBoolean("isLogNW");
-        }
         
         loggers = new LoggerManager();
 
-		if (isLogAccel) {
-			int[] types = {
-					Sensor.TYPE_ACCELEROMETER,
-					Sensor.TYPE_MAGNETIC_FIELD,
-					Sensor.TYPE_GYROSCOPE,
-					Sensor.TYPE_LINEAR_ACCELERATION,
-					Sensor.TYPE_GRAVITY,
-					Sensor.TYPE_ROTATION_VECTOR,
-					Sensor.TYPE_LIGHT,
-					Sensor.TYPE_PRESSURE,
-					Sensor.TYPE_PROXIMITY,
-					Sensor.TYPE_RELATIVE_HUMIDITY,
-					Sensor.TYPE_AMBIENT_TEMPERATURE
-			};
-			SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-			for (int i = 0; i < types.length; i++) {
-				try {
-					loggers.put("sensor."+types[i] ,new SensorLogger(this, sensorManager, types[i], SensorManager.SENSOR_DELAY_FASTEST, accessId));
-				} catch (com.fuyo.jumplogger.AbstractLogger.SensorNotFoundException e) {
-				}
+		int[] types = {
+				Sensor.TYPE_ACCELEROMETER,
+				Sensor.TYPE_MAGNETIC_FIELD,
+				Sensor.TYPE_GYROSCOPE,
+				Sensor.TYPE_LINEAR_ACCELERATION,
+				Sensor.TYPE_GRAVITY,
+				Sensor.TYPE_ROTATION_VECTOR,
+				Sensor.TYPE_LIGHT,
+				Sensor.TYPE_PRESSURE,
+				Sensor.TYPE_PROXIMITY,
+				Sensor.TYPE_RELATIVE_HUMIDITY,
+				Sensor.TYPE_AMBIENT_TEMPERATURE
+		};
+		SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+		for (int i = 0; i < types.length; i++) {
+			try {
+				loggers.put("sensor."+types[i] ,new SensorLogger(this, sensorManager, types[i], SensorManager.SENSOR_DELAY_FASTEST, accessId));
+			} catch (com.fuyo.jumplogger.AbstractLogger.SensorNotFoundException e) {
 			}
 		}
         LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -164,8 +117,6 @@ public class DataCollectorService extends Service {
 		
 		loggers.startLogging();
 		
-		showThreadFlag = true;
-		showThread.start();
         updateNotification();
         Log.i(TAG, "onStartCommand Received start id " + startId + ": " + intent);
         return START_STICKY;
@@ -176,21 +127,20 @@ public class DataCollectorService extends Service {
         loggers.stopLogging(new OnStopCompleteListener() {
 			@Override
 			public void onStopComplete() {
-		        showThreadFlag = false;
-		        try {
-					showThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-		        Toast.makeText(DataCollectorService.this, "service stopped", Toast.LENGTH_SHORT).show();
+		    	Intent intent = new Intent(DataCollectorService.this, LogUploader.class);
+		    	intent.putExtra("accessId", accessId);
+		    	intent.putExtra("email", sharedPref.getString("email", "error_email"));
+		    	intent.putExtra("password", sharedPref.getString("password", "error_pass"));
+		    	startService(intent);
+		        Toast.makeText(DataCollectorService.this, "logging stopped", Toast.LENGTH_SHORT).show();
 		        rescanSdcard();
 			}
         	
         });
     }
     public void rescanSdcard(){ 
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-                        Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
+//        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
+//                        Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
     } 
 
 	@Override

@@ -47,20 +47,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp" >
-
-                <Button
-                    android:id="@+id/goinButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="建物内に入った" />
-
-                <Button
-                    android:id="@+id/gooutButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="外に出た" />
             </LinearLayout>
 
             <LinearLayout
@@ -68,37 +54,7 @@
                 android:layout_marginTop="47dp"
                 android:layout_height="wrap_content" >
 
-            <CheckBox
-                android:id="@+id/checkBoxNWFlag"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="NW測位" />
-
-            <CheckBox
-                android:id="@+id/checkBoxLowEnergyFlag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="省電力モード" />
-
             </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/checkBoxGPSFlag"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="GPS測位" />
-
-            <CheckBox
-                android:id="@+id/CheckBoxAccel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="加速度,照度,近接" />
-
-            <CheckBox
-                android:id="@+id/CheckBoxSSID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="SSID,Bluetooth,Sound" />
 
             <TextView
                 android:id="@+id/idTextViewVersion"

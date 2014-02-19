@@ -17,6 +17,7 @@ import java.util.Locale;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -24,6 +25,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 
@@ -31,7 +33,7 @@ import android.util.Log;
 public class LogDataBase {
 	private long totalCount;
 	private long lastUpdate;
-    public static final String LOGDIR_NAME = "logDir";
+    public static final String LOGDIR_NAME = "jumplogger";
     public static final String UPLOAD_LOGDIR_NAME = "uploadDir";
     public static final String TEMP_LOGDIR_NAME = "_tmp_upload";
     private final SimpleDateFormat logTimeSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.JAPAN); //SimpleDataFormat is not thread-safe. Don't make it static.
@@ -50,6 +52,7 @@ public class LogDataBase {
 	private String uploadDir = "";
 	private File uploadFile;
 	private BufferedWriter instanceWriter;
+	private final SharedPreferences sharedPref;
 	Context context;
 	ConnectivityManager connectivityManger;
 	private String logHeader = "";
@@ -58,11 +61,12 @@ public class LogDataBase {
 		this.accessId = accessId;
 		this.logType = logType;
 		this.context = context;
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 		startTime = System.currentTimeMillis();
 		lastUpdate = startTime;
 		totalCount = 0;
 		if (isFileLogging) {
-	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPAN);
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN);
 	        String prefix = sdf.format(Calendar.getInstance().getTime());
 	        logDir = Environment.getExternalStorageDirectory().getPath() + "/" + LOGDIR_NAME + "/" + prefix + "/";
         	logFile = new File(logDir + logType + ".txt");
@@ -144,6 +148,8 @@ public class LogDataBase {
 					//upload
 			    	Intent intent = new Intent(context, LogUploader.class);
 			    	intent.putExtra("accessId", accessId);
+			    	intent.putExtra("email", sharedPref.getString("email", "error_email"));
+			    	intent.putExtra("password", sharedPref.getString("password", "error_pass"));
 			    	context.startService(intent);
 					
 					

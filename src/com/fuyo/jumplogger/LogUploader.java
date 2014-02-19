@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
@@ -33,10 +34,12 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -44,12 +47,16 @@ import android.util.Log;
 public class LogUploader extends IntentService {
     private static final int NOTIFICATION_ID = 2;
     private Notification notification;
-	public LogUploader(String name) {
+    final String url;
+    private String email;
+    private String password;
+    public LogUploader(String name) {
 		super(name);
+		url = "https://www.iijuf.net/jumplogger/api/uploadLogFile.php";
 	}
 
 	public LogUploader() {
-		super("LogUploadJob");
+		this("LogUploadJob");
 	}
 	@Override
 	protected void onHandleIntent(Intent intent) {
@@ -57,6 +64,8 @@ public class LogUploader extends IntentService {
 			if (!isConnected()) return;
 			
 			
+		    email = intent.getStringExtra("email");
+		    password = intent.getStringExtra("password");
 			final String uploadDir = intent.getStringExtra("uploadDir");
 			String logDir = Environment.getExternalStorageDirectory().getPath() + "/" + LogDataBase.LOGDIR_NAME + "/" + LogDataBase.UPLOAD_LOGDIR_NAME;
 			File baseDir = new File(logDir);
@@ -123,8 +132,8 @@ public class LogUploader extends IntentService {
 			}
 
 			Log.d("upload", "uploadFinished");
-	        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
-                    Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
+//	        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
+//                    Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
 
 		} catch (NullPointerException e) {
 			// error;
@@ -140,35 +149,38 @@ public class LogUploader extends IntentService {
 		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, Integer.valueOf(30000));
 		HttpClient httpClient = new DefaultHttpClient(httpParams);
 
-		HttpPost httpPost = new HttpPost("http://153.128.40.95/experiment/datacollect/uploadLogFile.php?accessId=" + accessId);
-		final MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-		FileBody fileBody = new FileBody(file, "text/plain");
-		reqEntity.addPart("upfile", fileBody);
-		httpPost.setEntity(reqEntity);
-
-		
-		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-			@Override
-			public String handleResponse(HttpResponse response)
-					throws ClientProtocolException, IOException {
-				switch (response.getStatusLine().getStatusCode()) {
-				case HttpStatus.SC_OK:
-					String body = EntityUtils.toString(response.getEntity(), "UTF-8");
-					Log.d("upload", body);
-					file.delete();
-					return body;
-				default:
-					return "NG";
-				}
-			}
-			    	  
-		};
 		try {
-			String result = httpClient.execute(httpPost, responseHandler);
+			HttpPost httpPost = new HttpPost(url + "?user=" + URLEncoder.encode(email, "UTF-8") + "&pass=" + URLEncoder.encode(password, "UTF-8"));
+			final MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+			FileBody fileBody = new FileBody(file, "text/plain");
+			reqEntity.addPart("upfile", fileBody);
+			httpPost.setEntity(reqEntity);
+	
+			
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+	
+				@Override
+				public String handleResponse(HttpResponse response)
+						throws ClientProtocolException, IOException {
+					switch (response.getStatusLine().getStatusCode()) {
+					case HttpStatus.SC_OK:
+						String body = EntityUtils.toString(response.getEntity(), "UTF-8");
+						Log.d("upload", body);
+						file.delete();
+						return body;
+					default:
+						return "NG";
+					}
+				}
+				    	  
+			};
+			httpClient.execute(httpPost, responseHandler);
 			
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
