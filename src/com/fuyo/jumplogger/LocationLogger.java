@@ -13,8 +13,8 @@ public class LocationLogger extends AbstractLogger{
 	LocationListener locationListener;
 	LocationManager locationManager;
 	final String type;
-	public LocationLogger(Context context, LocationManager locationManager, final String type, final String accessId) {
-		super(context, "location." + type, accessId);
+	public LocationLogger(Context context, LocationManager locationManager, final String type, final String accessId, final String label) {
+		super(context, "location." + type, accessId, label);
 		this.type = "location."+type;
   		locationListener = new LocationListener() {
 			
@@ -35,7 +35,6 @@ public class LocationLogger extends AbstractLogger{
 			}
 		};
 		this.locationManager = locationManager;
-		logDataBase = new LogDataBase(context, this.type, accessId);
 //		logDataBase.writeLogHeader("Latitude,Longitude,Altitude,Accuracy,Speed,Bearing");
 		
 	}

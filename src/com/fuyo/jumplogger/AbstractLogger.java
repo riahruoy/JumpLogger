@@ -10,8 +10,8 @@ import android.content.Context;
 public abstract class AbstractLogger {
 	protected LogDataBase logDataBase = null;
 	protected String logName = "error";
-	protected AbstractLogger(Context context, String logType, String accessId) {
-		logDataBase = new LogDataBase(context, logType, accessId);
+	protected AbstractLogger(Context context, String logType, String accessId, String label) {
+		logDataBase = new LogDataBase(context, logType, accessId, label);
 	}
 	protected AbstractLogger() {
 		

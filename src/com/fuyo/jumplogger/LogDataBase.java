@@ -57,7 +57,7 @@ public class LogDataBase {
 	ConnectivityManager connectivityManger;
 	private String logHeader = "";
 	
-	public LogDataBase(Context context, String logType, String accessId) {
+	public LogDataBase(Context context, String logType, String accessId, String label) {
 		this.accessId = accessId;
 		this.logType = logType;
 		this.context = context;
@@ -66,9 +66,7 @@ public class LogDataBase {
 		lastUpdate = startTime;
 		totalCount = 0;
 		if (isFileLogging) {
-	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN);
-	        String prefix = sdf.format(Calendar.getInstance().getTime());
-	        logDir = Environment.getExternalStorageDirectory().getPath() + "/" + LOGDIR_NAME + "/" + prefix + "/";
+	        logDir = Environment.getExternalStorageDirectory().getPath() + "/" + LOGDIR_NAME + "/" + label + "/";
         	logFile = new File(logDir + logType + ".txt");
         	logFile.getParentFile().mkdirs();
         	try {

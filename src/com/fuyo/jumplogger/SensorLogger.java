@@ -16,8 +16,8 @@ public class SensorLogger extends AbstractLogger {
 	final int sensorType;
 	Sensor sensor;
 	final int delay;
-	public SensorLogger(Context context, SensorManager sensorManager, final int type, final int delay, final String accessId) throws SensorNotFoundException {
-		super(context, getStringType(type), accessId);
+	public SensorLogger(Context context, SensorManager sensorManager, final int type, final int delay, final String accessId, final String label) throws SensorNotFoundException {
+		super(context, getStringType(type), accessId, label);
 		this.sensorManager = sensorManager;
 		this.sensorType = type;
 		this.delay = delay;

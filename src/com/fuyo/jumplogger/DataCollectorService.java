@@ -86,6 +86,8 @@ public class DataCollectorService extends Service {
     
 	@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPAN);
+        String label = sdf.format(Calendar.getInstance().getTime());
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         accessId = sharedPref.getString("id", "id_error");
         
@@ -107,13 +109,13 @@ public class DataCollectorService extends Service {
 		SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		for (int i = 0; i < types.length; i++) {
 			try {
-				loggers.put("sensor."+types[i] ,new SensorLogger(this, sensorManager, types[i], SensorManager.SENSOR_DELAY_FASTEST, accessId));
+				loggers.put("sensor."+types[i] ,new SensorLogger(this, sensorManager, types[i], SensorManager.SENSOR_DELAY_FASTEST, accessId, label));
 			} catch (com.fuyo.jumplogger.AbstractLogger.SensorNotFoundException e) {
 			}
 		}
         LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
-		loggers.put("location.gps", new LocationLogger(this, locationManager, "gps", accessId));
+		loggers.put("location.gps", new LocationLogger(this, locationManager, "gps", accessId, label));
 		
 		loggers.startLogging();
 		
