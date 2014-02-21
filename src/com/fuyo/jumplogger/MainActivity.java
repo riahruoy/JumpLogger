@@ -62,8 +62,6 @@ public class MainActivity extends Activity {
         }
         final String id = sharedPref.getString("id", "id_error");
         
-        TextView tv = (TextView)findViewById(R.id.idTextView);
-        tv.setText("http://overtone.nilab.ecl.ntt.co.jp/~fujii/datacollect/logList.php?accessId=" + id);
         
         logTextView = (TextView)findViewById(R.id.logTextView);
         logIntentFilter = new IntentFilter();
@@ -94,19 +92,19 @@ public class MainActivity extends Activity {
 			}
 		});
         
-        Button uploadButton = (Button)findViewById(R.id.uploadButton);
-        uploadButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-		    	Intent intent = new Intent(MainActivity.this, LogUploader.class);
-
-		    	intent.putExtra("accessId", id);
-		    	intent.putExtra("email", sharedPref.getString("email", "error_email"));
-		    	intent.putExtra("password", sharedPref.getString("password", "error_pass"));
-		    	MainActivity.this.startService(intent);
-			}
-		});
+//        Button uploadButton = (Button)findViewById(R.id.uploadButton);
+//        uploadButton.setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//		    	Intent intent = new Intent(MainActivity.this, LogUploader.class);
+//
+//		    	intent.putExtra("accessId", id);
+//		    	intent.putExtra("email", sharedPref.getString("email", "error_email"));
+//		    	intent.putExtra("password", sharedPref.getString("password", "error_pass"));
+//		    	MainActivity.this.startService(intent);
+//			}
+//		});
         
         int versionCode = -1;
         String versionName = "versionNone";
@@ -140,7 +138,7 @@ public class MainActivity extends Activity {
 								stopService(intent);
 								setInputEnabled(false);
 							}
-							Uri uri = Uri.parse("http://153.128.40.95/experiment/datacollect/apk/" + apkName);
+							Uri uri = Uri.parse("http://jumplogger.iijuf.net/apk/" + apkName);
 							Intent i = new Intent(Intent.ACTION_VIEW, uri);
 							startActivity(i);
 							finish();
