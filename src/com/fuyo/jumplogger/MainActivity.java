@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
 	BroadcastReceiver logReceiver;
 	IntentFilter logIntentFilter;
 	SharedPreferences sharedPref;
+	TextView idTextView;
     private static final int MENU_ID_MENU1 = (Menu.FIRST);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,7 @@ public class MainActivity extends Activity {
 		}
 		
 		TextView tvVersion = (TextView)findViewById(R.id.idTextViewVersion);
+		idTextView = (TextView)findViewById(R.id.idTextView);
 		tvVersion.setText("version : " + versionName + "." + versionCode);
 		
 		
@@ -182,6 +184,8 @@ public class MainActivity extends Activity {
     			startButton.setEnabled(false);
     		}
     	}
+    	
+    	idTextView.setText(sharedPref.getString("email", "menu -> login"));
     }
     
     @Override
