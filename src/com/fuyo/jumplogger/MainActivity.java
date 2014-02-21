@@ -53,6 +53,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!sharedPref.contains("email")) {
+        	Intent intent = new Intent(this, LoginActivity.class);
+        	intent.setAction(Intent.ACTION_VIEW);
+        	startActivity(intent);
+        }
         if (!sharedPref.contains("id")) {
         	Editor e = sharedPref.edit();
         	Random r = new Random();
@@ -167,6 +172,9 @@ public class MainActivity extends Activity {
     		setInputEnabled(true);
     	} else {
     		setInputEnabled(false);
+    		if (!sharedPref.contains("email")) {
+    			startButton.setEnabled(false);
+    		}
     	}
     }
     
