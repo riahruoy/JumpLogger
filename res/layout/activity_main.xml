@@ -74,8 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="19dp"
                 android:layout_marginTop="19dp"
-                android:text="ここにログ状態が表示されます"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 
     </ScrollView>

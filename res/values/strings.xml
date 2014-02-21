@@ -9,5 +9,9 @@
     <string name="url_passcheck">https://www.iijuf.net/jumplogger/api/passcheck.php</string>
     <string name="url_entry">https://www.iijuf.net/jumplogger/api/entryexe.php</string>
     <string name="url_upload">https://www.iijuf.net/jumplogger/api/uploadFile.php</string>
+    <string name="waiting_for_gps_signal">GPSの信号を待っています</string>
+    <string name="gps_signal_ready">キッカーに向かって滑り始めてください。飛び終わったら停止してください。</string>
+    <string name="need_login">ログインが必要です</string>
+    <string name="press_start">準備が出来たら開始ボタンを押してください"</string>
 
 </resources>

@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.Random;
 
 
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -69,13 +72,14 @@ public class MainActivity extends Activity {
         
         
         logTextView = (TextView)findViewById(R.id.logTextView);
+        logTextView.setText(R.string.press_start);
         logIntentFilter = new IntentFilter();
         logIntentFilter.addAction(DataCollectorService.INTENT_ACTION);
         logReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				String logString = intent.getExtras().getString("message");
-				logTextView.setText(logString);
+//				logTextView.setText(logString);
 			}
         	
         };
@@ -86,6 +90,7 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				onCheckFinish(true);
+				logTextView.setText(R.string.waiting_for_gps_signal);
 			}
 		});
         stopButton.setOnClickListener(new OnClickListener() {
@@ -94,6 +99,7 @@ public class MainActivity extends Activity {
 				intent.putExtra("id", sharedPref.getString("id", "id_error"));
 				stopService(intent);
 				setInputEnabled(false);
+				logTextView.setText(R.string.press_start);
 			}
 		});
         
@@ -201,6 +207,36 @@ public class MainActivity extends Activity {
 			intent.putExtra("id", id);
 			setInputEnabled(true);
 			startService(intent);
+
+			final LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+	     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
+				
+				@Override
+				public void onStatusChanged(String provider, int status, Bundle extras) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onProviderEnabled(String provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onProviderDisabled(String provider) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onLocationChanged(Location location) {
+					logTextView.setText(R.string.gps_signal_ready);
+					locationManager.removeUpdates(this);
+				}
+			});
+
+			
 			
     	} else {
     		final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
