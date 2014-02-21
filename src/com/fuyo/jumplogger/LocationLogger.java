@@ -42,7 +42,7 @@ public class LocationLogger extends AbstractLogger{
 	@Override
 	public void startLogging() {
 		if (type.contains("gps")) {
-	     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+	     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, locationListener);
 		} else {
 	     	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, locationListener);
 		}
