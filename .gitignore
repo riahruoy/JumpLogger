@@ -2,3 +2,6 @@
 /gen
 /bin
 /.classpath
+.idea/*
+*.iml
+
