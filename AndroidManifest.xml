@@ -5,8 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="15" />
 
     <application
         android:allowBackup="true"
@@ -16,14 +16,16 @@
         <activity
             android:name="com.fuyo.jumplogger.MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.fuyo.jumplogger.CreateAccountActivity" />
         <activity android:name="com.fuyo.jumplogger.LoginActivity" />
+        <activity android:name=".JumpListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service android:name="com.fuyo.jumplogger.DataCollectorService" />
 		<service android:name="com.fuyo.jumplogger.LogUploader" />
     </application>

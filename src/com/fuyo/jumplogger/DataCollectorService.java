@@ -1,29 +1,5 @@
 package com.fuyo.jumplogger;
 
-import android.location.Geocoder;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-
-
-
-
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,17 +9,18 @@ import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.fuyo.jumplogger.LogDataBase.OnStopCompleteListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class DataCollectorService extends Service {
@@ -72,12 +49,12 @@ public class DataCollectorService extends Service {
     	
     	
     	
-        notification = new NotificationCompat.Builder(this)
+        notification = new Notification.Builder(this)
     	.setContentTitle("SensorTest")
     	.setContentText(text)
     	.setContentIntent(pintent)
     	.setSmallIcon(R.drawable.ic_launcher)
-    	.build();
+    	.getNotification();
             
 
         startForeground(NOTIFICATION_ID, notification);
