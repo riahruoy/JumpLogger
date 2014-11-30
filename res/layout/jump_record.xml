@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="72dp"
@@ -14,9 +14,13 @@
 
     <TextView
         android:id="@+id/text_avatar"
+        android:layout_marginTop="16dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:gravity="center"
+
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:text="aa"/>
 
     <LinearLayout
@@ -24,7 +28,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginLeft="16dp"
-        android:paddingRight="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/text_avatar"
+        android:layout_toLeftOf="@+id/imageButton"
         android:gravity="center_vertical">
 
         <TextView
@@ -43,4 +50,14 @@
             />
     </LinearLayout>
 
-</LinearLayout>
+    <ImageButton
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:padding="16dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:background="#00000000"
+        android:src="@android:drawable/ic_menu_info_details"
+        android:id="@+id/imageButton" />
+
+</RelativeLayout>

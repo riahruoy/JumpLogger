@@ -43,5 +43,6 @@ public class JumpListActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
 
+
     }
 }

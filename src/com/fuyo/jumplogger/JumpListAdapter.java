@@ -1,12 +1,17 @@
 package com.fuyo.jumplogger;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -26,11 +31,13 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
         public TextView mAvatar;
         public TextView mView;
         public TextView mView2;
+        public ImageButton mButton;
         public ViewHolder(View v) {
             super(v);
             mAvatar = (TextView)v.findViewById(R.id.text_avatar);
             mView = (TextView)v.findViewById(R.id.info_text1);
             mView2 = (TextView)v.findViewById(R.id.info_text2);
+            mButton = (ImageButton)v.findViewById(R.id.imageButton);
         }
     }
 
@@ -44,7 +51,7 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
     public JumpListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
-        LinearLayout v = (LinearLayout)LayoutInflater.from(parent.getContext())
+        RelativeLayout v = (RelativeLayout)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.jump_record, parent, false);
 
         // set the view's size, margins, paddings and layout parameters
@@ -70,6 +77,21 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
 
         holder.mView.setText(mDataset.get(position).location);
         holder.mView2.setText("" + mDataset.get(position).date);
+
+        holder.mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(view.getContext(), view);
+                menu.getMenuInflater().inflate(R.menu.popup, menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                menu.show();
+            }
+        });
 
     }
 
