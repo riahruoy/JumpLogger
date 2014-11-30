@@ -12,25 +12,33 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/Theme.AppCompat.Light" >
         <activity
-            android:name="com.fuyo.jumplogger.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.fuyo.jumplogger.CreateAccountActivity" />
-        <activity android:name="com.fuyo.jumplogger.LoginActivity" />
-        <activity android:name=".JumpListActivity">
+        <activity android:name=".CreateAccountActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".JumpListActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name="com.fuyo.jumplogger.DataCollectorService" />
-		<service android:name="com.fuyo.jumplogger.LogUploader" />
+        <service android:name=".DataCollectorService" />
+        <service android:name=".LogUploader" />
+
+        <activity
+            android:name=".JumpDetailActivity"
+            android:label="@string/title_activity_jump_detail" >
+        </activity>
     </application>
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
- 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>  
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 </manifest>

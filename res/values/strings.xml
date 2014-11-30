@@ -13,5 +13,7 @@
     <string name="gps_signal_ready">キッカーに向かって滑り始めてください。飛び終わったら停止してください。</string>
     <string name="need_login">ログインが必要です</string>
     <string name="press_start">準備が出来たら開始ボタンを押してください"</string>
+    <string name="title_activity_jump_detail">JumpDetailActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
