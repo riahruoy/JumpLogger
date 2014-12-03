@@ -5,7 +5,9 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.BufferOverflowException;
 import java.util.ArrayList;
@@ -21,9 +23,10 @@ public class JumpRecord {
     public String trickName = "";
     public String sportsType = "";
     public int isSuccess = -1;
+    public static final String FILENAME = "FILE";
 
 
-    public static ArrayList<JumpRecord> readAll(FileInputStream fileInputStream) throws IOException {
+    public static ArrayList<JumpRecord> readAll(InputStream fileInputStream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
         String line = "";
         ArrayList<JumpRecord> records = new ArrayList<JumpRecord>();
@@ -37,7 +40,7 @@ public class JumpRecord {
         reader.close();
         return records;
     }
-    public static void writeAll(ArrayList<JumpRecord> records, FileOutputStream fileOutputStream)
+    public static void writeAll(ArrayList<JumpRecord> records, OutputStream fileOutputStream)
             throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
         for (JumpRecord record : records) {
@@ -48,6 +51,7 @@ public class JumpRecord {
     }
     private static JumpRecord valueOf(String line) {
         JumpRecord record = new JumpRecord();
+
         String[] cols = line.split("\t");
         record.date = cols[0];
         record.duration = Double.valueOf(cols[1]);

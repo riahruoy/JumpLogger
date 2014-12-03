@@ -3,9 +3,11 @@ package com.fuyo.jumplogger;
 import android.app.IntentService;
 import android.app.Notification;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -23,6 +25,7 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -130,8 +133,17 @@ public class LogUploader extends IntentService {
 			Log.d("upload", "uploadFinished");
 //	        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
 //                    Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
+            String str = Downloader.downloadString("upload", url, email, password, labels.get(0));
+            InputStream is = new ByteArrayInputStream(str.getBytes());
+            ArrayList<JumpRecord> records = JumpRecord.readAll(is);
+            is.close();
+            if (records.size() > 0) {
+                FileOutputStream os = openFileOutput(JumpRecord.FILENAME, MODE_PRIVATE);
+                JumpRecord.writeAll(records, os);
+            } else {
 
-		} catch (NullPointerException e) {
+            }
+        } catch (NullPointerException e) {
 			// error;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

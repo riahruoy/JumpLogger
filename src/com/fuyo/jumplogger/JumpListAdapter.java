@@ -66,12 +66,12 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         BigDecimal bi = new BigDecimal(String.valueOf(mDataset.get(position).duration));
-        String sec = bi.setScale(1, BigDecimal.ROUND_HALF_UP).toString();
+        String sec = bi.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         GradientDrawable drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.OVAL);
         drawable.setColor(Color.parseColor("#263238"));
 
-        holder.mAvatar.setText(sec);
+        holder.mAvatar.setText(sec + "s");
         holder.mAvatar.setTextColor(Color.WHITE);
         holder.mAvatar.setBackgroundDrawable(drawable);
 
@@ -100,4 +100,10 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
     public int getItemCount() {
         return mDataset.size();
     }
+
+    public void setData(ArrayList<JumpRecord> records) {
+        mDataset = records;
+    }
+
+
 }
