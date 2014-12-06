@@ -113,7 +113,11 @@ public class JumpListActivity extends Activity {
                         }
                     } else {
                         //TODO separate server error and connection error
-                        Toast.makeText(JumpListActivity.this, "id or password incorrect", Toast.LENGTH_SHORT).show();
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                Toast.makeText(JumpListActivity.this, "id or password incorrect", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                     return "";
                 }

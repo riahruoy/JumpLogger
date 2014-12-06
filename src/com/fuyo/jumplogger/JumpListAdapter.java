@@ -15,7 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Created by Yohei FUJII on 11/23/2014.
@@ -65,18 +71,47 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        JumpRecord record = mDataset.get(position);
         BigDecimal bi = new BigDecimal(String.valueOf(mDataset.get(position).duration));
         String sec = bi.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
         GradientDrawable drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.OVAL);
-        drawable.setColor(Color.parseColor("#263238"));
+
+        if (record.duration >= 1) {
+            drawable.setColor(Color.parseColor("#263238"));
+        } else {
+            drawable.setColor(Color.parseColor("#4C646F"));
+        }
 
         holder.mAvatar.setText(sec + "s");
         holder.mAvatar.setTextColor(Color.WHITE);
         holder.mAvatar.setBackgroundDrawable(drawable);
 
-        holder.mView.setText(mDataset.get(position).location);
-        holder.mView2.setText("" + mDataset.get(position).date);
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.JAPAN); //SimpleDataFormat is not thread-safe. Don't make it static.
+        String dateStr = "";
+        try {
+            Date d = sdf.parse(mDataset.get(position).date);
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(d);
+            Calendar now = Calendar.getInstance();
+
+            if (cal1.get(Calendar.DAY_OF_YEAR ) == now.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
+                SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm", Locale.JAPAN);
+                dateStr = sdf2.format(cal1.getTime());
+            } else if (cal1.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
+                SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd", Locale.JAPAN);
+                dateStr = sdf2.format(cal1.getTime());
+            } else {
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yy/MM/dd", Locale.JAPAN);
+                dateStr = sdf2.format(cal1.getTime());
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        holder.mView.setText((new BigDecimal(String.valueOf(mDataset.get(position).distance))).setScale(1, BigDecimal.ROUND_HALF_UP).toString() + " m    " + dateStr);
+        holder.mView2.setText(mDataset.get(position).location);
 
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
