@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
@@ -68,6 +71,16 @@ public class JumpListActivity extends Activity {
         mAdapter = new JumpListAdapter(records);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
+
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab.attachToRecyclerView(mRecyclerView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(JumpListActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
     @Override
     public void onResume() {
