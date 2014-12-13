@@ -6,9 +6,17 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -31,6 +39,7 @@ public class JumpListActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.jump_list);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -81,13 +90,32 @@ public class JumpListActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+
+
     }
     @Override
     public void onResume() {
         super.onResume();
         reloadOnlineJumprecord();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.jump_detail, menu);
 
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void reloadOnlineJumprecord() {
         if (sharedPref.contains("email")) {
             final String url = "https://www.iijuf.net/jumplogger/api/api.jump.php";
@@ -138,7 +166,7 @@ public class JumpListActivity extends Activity {
                 @Override
                 protected void onPostExecute(String result) {
                     mAdapter.notifyDataSetChanged();
-                    mRecyclerView.invalidate();
+                    mRecyclerView.setAdapter(mAdapter);
                 }
 
             }.set(type, url, email, password, label);
