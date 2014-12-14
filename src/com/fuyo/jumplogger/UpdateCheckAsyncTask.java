@@ -31,7 +31,7 @@ public class UpdateCheckAsyncTask extends AsyncTask<String, Integer, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet("http://153.128.40.95/experiment/datacollect/apk/getApkList.php");
+		HttpGet httpGet = new HttpGet("http://jumplogger.iijuf.net/apk/getApkList.php");
 		  ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 				
 			  @Override

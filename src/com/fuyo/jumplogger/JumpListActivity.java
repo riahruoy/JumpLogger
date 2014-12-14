@@ -53,7 +53,6 @@ public class JumpListActivity extends Activity {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setAction(Intent.ACTION_VIEW);
             startActivity(intent);
-            finish();
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
