@@ -143,6 +143,7 @@ public class LogUploader extends IntentService {
             } else {
 
             }
+            calc(labels);
         } catch (NullPointerException e) {
 			// error;
 		} catch (Exception e) {
@@ -150,6 +151,47 @@ public class LogUploader extends IntentService {
 			e.printStackTrace();
 		}
 	}
+
+    private void calc(List<String> labels) {
+        for (String label : labels) {
+            HttpParams httpParams = new BasicHttpParams();
+            httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, Integer.valueOf(10000));
+            httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, Integer.valueOf(30000));
+            HttpClient httpClient = new DefaultHttpClient(httpParams);
+
+            try {
+                HttpPost httpPost = new HttpPost("https://www.iijuf.net/jumplogger/api/api.jump.php" + "?type=calc&user=" + URLEncoder.encode(email, "UTF-8") + "&pass=" + URLEncoder.encode(password, "UTF-8") + "&label="+URLEncoder.encode(label, "UTF-8"));
+
+                ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+                    @Override
+                    public String handleResponse(HttpResponse response)
+                            throws ClientProtocolException, IOException {
+                        switch (response.getStatusLine().getStatusCode()) {
+                            case HttpStatus.SC_OK:
+                                String body = EntityUtils.toString(response.getEntity(), "UTF-8");
+                                return body;
+                            default:
+                                return "NG";
+                        }
+                    }
+
+                };
+                httpClient.execute(httpPost, responseHandler);
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            httpClient.getConnectionManager().shutdown();
+            httpClient = null;
+
+        }
+    }
 	
 	private void uploadFile(final File file, final String accessId, final String label) {
 		HttpParams httpParams = new BasicHttpParams();
