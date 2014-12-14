@@ -51,6 +51,9 @@ public class MainActivity extends Activity {
 	IntentFilter logIntentFilter;
 	SharedPreferences sharedPref;
 	TextView idTextView;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    boolean isCheckProcessing = false;
     private static final int MENU_ID_MENU1 = (Menu.FIRST);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,35 @@ public class MainActivity extends Activity {
         	e.commit();
         }
         final String id = sharedPref.getString("id", "id_error");
-        
+        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onLocationChanged(Location location) {
+                logTextView.setText(R.string.gps_signal_ready);
+                locationManager.removeUpdates(this);
+                isCheckProcessing = false;
+            }
+        };
+
         
         logTextView = (TextView)findViewById(R.id.logTextView);
         logTextView.setText(R.string.press_start);
@@ -90,6 +121,7 @@ public class MainActivity extends Activity {
         stopButton = (Button)findViewById(R.id.stopService);
         startButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+                isCheckProcessing = true;
 				onCheckFinish(true);
 				logTextView.setText(R.string.waiting_for_gps_signal);
 			}
@@ -101,6 +133,9 @@ public class MainActivity extends Activity {
 				stopService(intent);
 				setInputEnabled(false);
 				logTextView.setText(R.string.press_start);
+                if (isCheckProcessing) {
+                    locationManager.removeUpdates(locationListener);
+                }
 			}
 		});
         
@@ -212,33 +247,7 @@ public class MainActivity extends Activity {
 			setInputEnabled(true);
 			startService(intent);
 
-			final LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-	     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, new LocationListener() {
-				
-				@Override
-				public void onStatusChanged(String provider, int status, Bundle extras) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onProviderEnabled(String provider) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onProviderDisabled(String provider) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void onLocationChanged(Location location) {
-					logTextView.setText(R.string.gps_signal_ready);
-					locationManager.removeUpdates(this);
-				}
-			});
+	     	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
 
 			
 			

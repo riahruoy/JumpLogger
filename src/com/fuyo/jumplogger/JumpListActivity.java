@@ -1,8 +1,13 @@
 package com.fuyo.jumplogger;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -90,6 +96,49 @@ public class JumpListActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        int versionCode = -1;
+        String versionName = "versionNone";
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionCode = pInfo.versionCode;
+            versionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+
+        UpdateCheckAsyncTask ucat = new UpdateCheckAsyncTask(this, versionCode, new UpdateCheckAsyncTask.UpdateCheckListener() {
+
+            @Override
+            public void onNewVersionFound(final String apkName) {
+                new AlertDialog.Builder(JumpListActivity.this)
+                        .setTitle("New Version Found")
+                        .setMessage("New version found :" + apkName)
+                        .setPositiveButton("download", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri uri = Uri.parse("http://jumplogger.iijuf.net/apk/" + apkName);
+                                Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(i);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .setCancelable(true)
+                        .show();
+
+            }
+        });
+        ucat.execute(new String[]{});
 
 
 
