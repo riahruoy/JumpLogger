@@ -79,6 +79,31 @@ public class JumpListActivity extends Activity {
 
         }
 
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+
+        // Set an OnMenuItemClickListener to handle menu item clicks
+        toolbar.setOnMenuItemClickListener(
+                new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_settings:
+                                Intent intent = new Intent(JumpListActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                return true;
+                        }
+                        return true;
+                    }
+                });
+
+        // Inflate a menu to be displayed in the toolbar
+        toolbar.inflateMenu(R.menu.jump_detail);
+        toolbar.setTitle(R.string.app_name);
+
+
+
+
         // specify an adapter (see also next example)
 //        JumpRecord record = new JumpRecord();
 //        record.date = "2014-12-01 12:30:30";
@@ -173,23 +198,23 @@ public class JumpListActivity extends Activity {
         super.onPause();
         unregisterReceiver(mUpdateBroadcastReceiver);
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.jump_detail, menu);
-
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.jump_detail, menu);
+//
+//        return true;
+//    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_settings:
+//                Intent intent = new Intent(this, LoginActivity.class);
+//                startActivity(intent);
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
     private void reloadOnlineJumprecord() {
         if (sharedPref.contains("email")) {
             final String url = "https://www.iijuf.net/jumplogger/api/api.jump.php";

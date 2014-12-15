@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <FrameLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:title="@string/app_name"
+        fab:theme="@style/ThemeOverlay.AppCompat.Light"
+        fab:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/my_recycler_view"
@@ -22,3 +33,4 @@
             fab:fab_colorPressed="@color/accent_pressed"
             fab:fab_colorRipple="@color/ripple"/>
     </FrameLayout >
+    </LinearLayout>
