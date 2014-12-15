@@ -2,8 +2,11 @@ package com.fuyo.jumplogger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -41,6 +44,9 @@ public class JumpListActivity extends Activity {
     LinearLayoutManager mLayoutManager;
     JumpListAdapter mAdapter;
     SharedPreferences sharedPref;
+    public static final String ACTION_UPDATE_LIST = "JumpListActivity_UPDATE_LIST";
+    private BroadcastReceiver mUpdateBroadcastReceiver;
+    private IntentFilter mIntentFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,12 +146,32 @@ public class JumpListActivity extends Activity {
         ucat.execute(new String[]{});
 
 
+        mUpdateBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                reloadOnlineJumprecord();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(JumpListActivity.this, "Jumplist refleshed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        };
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(ACTION_UPDATE_LIST);
 
     }
     @Override
     public void onResume() {
         super.onResume();
         reloadOnlineJumprecord();
+        registerReceiver(mUpdateBroadcastReceiver, mIntentFilter);
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(mUpdateBroadcastReceiver);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

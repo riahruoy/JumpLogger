@@ -150,6 +150,9 @@ public class LogUploader extends IntentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        //send Broadcast to JumpListActivity
+        Intent intentBroadcast = new Intent(JumpListActivity.ACTION_UPDATE_LIST);
+        sendBroadcast(intentBroadcast);
 	}
 
     private void calc(List<String> labels) {
