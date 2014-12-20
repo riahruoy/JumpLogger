@@ -133,7 +133,7 @@ public class LogUploader extends IntentService {
 			Log.d("upload", "uploadFinished");
 //	        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, 
 //                    Uri.parse("file://" +  Environment.getExternalStorageDirectory()))); 
-            String str = Downloader.downloadString("upload", url, email, password, labels.get(0));
+            String str = InternetConnection.downloadString("upload", url, email, password, labels.get(0));
             InputStream is = new ByteArrayInputStream(str.getBytes());
             ArrayList<JumpRecord> records = JumpRecord.readAll(is);
             is.close();

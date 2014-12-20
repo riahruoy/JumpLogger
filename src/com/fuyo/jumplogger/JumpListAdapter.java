@@ -1,16 +1,21 @@
 package com.fuyo.jumplogger;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +25,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -28,6 +32,7 @@ import java.util.Locale;
  */
 public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHolder> {
     private ArrayList<JumpRecord> mDataset;
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -68,7 +73,7 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         JumpRecord record = mDataset.get(position);
@@ -95,16 +100,8 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
             cal1.setTime(d);
             Calendar now = Calendar.getInstance();
 
-            if (cal1.get(Calendar.DAY_OF_YEAR ) == now.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
-                SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm", Locale.JAPAN);
-                dateStr = sdf2.format(cal1.getTime());
-            } else if (cal1.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
-                SimpleDateFormat sdf2 = new SimpleDateFormat("MM/dd", Locale.JAPAN);
-                dateStr = sdf2.format(cal1.getTime());
-            } else {
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yy/MM/dd", Locale.JAPAN);
-                dateStr = sdf2.format(cal1.getTime());
-            }
+            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm", Locale.JAPAN);
+            dateStr = sdf2.format(cal1.getTime());
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -115,12 +112,53 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
 
         holder.mButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 PopupMenu menu = new PopupMenu(view.getContext(), view);
                 menu.getMenuInflater().inflate(R.menu.popup, menu.getMenu());
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
+                        LayoutInflater inflater = (LayoutInflater)view.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        final View dialogView = inflater.inflate(R.layout.edit_dialog, (ViewGroup)view.findViewById(R.id.layout_root));
+                        final TextView txtLocation = (TextView)dialogView.findViewById(R.id.editdialog_location);
+                        final TextView txtTrickname = (TextView)dialogView.findViewById(R.id.editdialog_trickname);
+                        final CheckBox chkbox = (CheckBox)dialogView.findViewById(R.id.editdialog_issuccess);
+                        txtLocation.setText(mDataset.get(position).location);
+                        txtTrickname.setText(mDataset.get(position).trickName);
+                        chkbox.setChecked(mDataset.get(position).isSuccess == 1);
+                        builder.setView(dialogView);
+                        builder.setTitle(mDataset.get(position).date);
+                        builder.setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDataset.get(position).location = txtLocation.getText().toString();
+                                mDataset.get(position).trickName = txtTrickname.getText().toString();
+                                mDataset.get(position).isSuccess = (chkbox.isChecked() ? 1 : 0);
+                                final String url = "https://www.iijuf.net/jumplogger/api/api.jump.php";
+                                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(view.getContext());
+                                final String email = sharedPref.getString("email", "defEmail");
+                                final String password = sharedPref.getString("password", "defPass");
+                                AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        InternetConnection.updateJumpRecord(url, email, password, mDataset.get(position));
+                                        return null;
+                                    }
+                                };
+                                task.execute();
+                                notifyDataSetChanged();
+                                //TODO update
+                            }
+                        });
+                        builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        builder.create().show();
+
+
                         return false;
                     }
                 });

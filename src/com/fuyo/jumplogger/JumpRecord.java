@@ -16,6 +16,7 @@ import java.util.ArrayList;
  * Created by Yohei FUJII on 11/23/2014.
  */
 public class JumpRecord {
+    public String id;
     public String date;
     public double duration = 0;
     public double distance = 0;
@@ -53,17 +54,18 @@ public class JumpRecord {
         JumpRecord record = new JumpRecord();
 
         String[] cols = line.split("\t");
-        record.date = cols[0];
-        record.duration = Double.valueOf(cols[1]);
-        record.distance = Double.valueOf(cols[2]);
-        record.sportsType = cols[3];
-        record.trickName = cols[4];
-        record.isSuccess = Integer.valueOf(cols[5]);
-        record.location = cols[6];
+        record.id = cols[0];
+        record.date = cols[1];
+        record.duration = Double.valueOf(cols[2]);
+        record.distance = Double.valueOf(cols[3]);
+        record.sportsType = cols[4];
+        record.trickName = cols[5];
+        record.isSuccess = Integer.valueOf(cols[6]);
+        record.location = cols[7];
         return record;
     }
     public String toString() {
-        String line = date + "\t" + duration + "\t" + distance + "\t" + sportsType
+        String line = id + "\t" + date + "\t" + duration + "\t" + distance + "\t" + sportsType
                 + "\t" + trickName + "\t" + isSuccess + "\t" + location;
         return line;
     }

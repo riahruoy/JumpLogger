@@ -31,6 +31,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
@@ -48,8 +49,8 @@ import android.widget.Toast;
 import com.fuyo.jumplogger.JumpRecord;
 
 
-public class Downloader {
-    public static String downloadString (final String type, final String url, final String email, final String password, final String label) {
+public class InternetConnection {
+    public static String post (final String url, ArrayList<BasicNameValuePair> params) {
         try {
             HttpParams httpParams = new BasicHttpParams();
             httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, Integer.valueOf(10000));
@@ -57,7 +58,8 @@ public class Downloader {
             httpParams.setParameter(CoreProtocolPNames.USER_AGENT, "Mozilla/5.0 (Linux; U; Android 4.0.1; ja-jp; Galaxy Nexus Build/ITL41D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30");
             HttpClient httpClient = new DefaultHttpClient(httpParams);
 
-            HttpPost httpPost = new HttpPost(url + "?type="+type+"&user=" + URLEncoder.encode(email, "UTF-8") + "&pass=" + URLEncoder.encode(password, "UTF-8") + "&label="+URLEncoder.encode(label, "UTF-8"));
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
@@ -86,7 +88,7 @@ public class Downloader {
                                 reader.close();
                             }
 
-    //					Log.d("upload", body);
+                            //					Log.d("upload", body);
                             if (body.startsWith("error")) {
                                 return "";
                             }
@@ -115,6 +117,29 @@ public class Downloader {
             e.printStackTrace();
         }
         return "";
-    }
 
+    }
+    public static String downloadString (final String type, final String url, final String email, final String password, final String label) {
+
+        ArrayList<BasicNameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("type", type));
+        params.add(new BasicNameValuePair("user", email));
+        params.add(new BasicNameValuePair("pass", password));
+        params.add(new BasicNameValuePair("label", label));
+        return post(url, params);
+
+
+    }
+    public static String updateJumpRecord (final String url, final String email, final String password, final JumpRecord record) {
+        ArrayList<BasicNameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("type", "update"));
+        params.add(new BasicNameValuePair("user", email));
+        params.add(new BasicNameValuePair("pass", password));
+        params.add(new BasicNameValuePair("record_id", record.id));
+        params.add(new BasicNameValuePair("record_sportsType", record.sportsType));
+        params.add(new BasicNameValuePair("record_location", record.location));
+        params.add(new BasicNameValuePair("record_isSuccess", Integer.toString(record.isSuccess)));
+        params.add(new BasicNameValuePair("record_trickName", record.trickName));
+        return post(url, params);
+    }
 }

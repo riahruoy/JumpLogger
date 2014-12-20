@@ -14,24 +14,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.melnykov.fab.FloatingActionButton;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -139,6 +132,7 @@ public class JumpListActivity extends Activity {
             versionCode = pInfo.versionCode;
             versionName = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -247,7 +241,7 @@ public class JumpListActivity extends Activity {
 
                 @Override
                 protected String doInBackground(Void... voids) {
-                    String result = Downloader.downloadString(type, url, email, password, label);
+                    String result = InternetConnection.downloadString(type, url, email, password, label);
                     if (result.length() > 0) {
                         InputStream is = new ByteArrayInputStream(result.getBytes());
                         try {
