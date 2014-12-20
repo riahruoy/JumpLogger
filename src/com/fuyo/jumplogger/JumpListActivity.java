@@ -34,7 +34,13 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Yohei FUJII on 11/23/2014.
@@ -47,6 +53,7 @@ public class JumpListActivity extends Activity {
     public static final String ACTION_UPDATE_LIST = "JumpListActivity_UPDATE_LIST";
     private BroadcastReceiver mUpdateBroadcastReceiver;
     private IntentFilter mIntentFilter;
+    private ArrayList<JumpRecord> mJumpRecords;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,14 +77,15 @@ public class JumpListActivity extends Activity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        ArrayList<JumpRecord> records = new ArrayList<JumpRecord>();
+        mJumpRecords = new ArrayList<JumpRecord>();
         try {
             InputStream is = openFileInput(JumpRecord.FILENAME);
-            records = JumpRecord.readAll(is);
+            mJumpRecords = JumpRecord.readAll(is);
             is.close();
         } catch (IOException e) {
 
         }
+
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
@@ -113,7 +121,7 @@ public class JumpListActivity extends Activity {
 //            records.add(record);
 //        }
 
-        mAdapter = new JumpListAdapter(records);
+        mAdapter = new JumpListAdapter(mJumpRecords);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
 
@@ -126,6 +134,13 @@ public class JumpListActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+
+
+
+
+
+
 
         int versionCode = -1;
         String versionName = "versionNone";
@@ -169,6 +184,9 @@ public class JumpListActivity extends Activity {
             }
         });
         ucat.execute(new String[]{});
+
+
+
 
 
         mUpdateBroadcastReceiver = new BroadcastReceiver() {
@@ -244,9 +262,10 @@ public class JumpListActivity extends Activity {
                     if (result.length() > 0) {
                         InputStream is = new ByteArrayInputStream(result.getBytes());
                         try {
-                            ArrayList<JumpRecord> records = JumpRecord.readAll(is);
-                            JumpRecord.writeAll(records, openFileOutput(JumpRecord.FILENAME, MODE_PRIVATE));
-                            mAdapter.setData(records);
+                            mJumpRecords = JumpRecord.readAll(is);
+                            JumpRecord.writeAll(mJumpRecords, openFileOutput(JumpRecord.FILENAME, MODE_PRIVATE));
+                            mAdapter.setData(mJumpRecords);
+
                             is.close();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -265,11 +284,48 @@ public class JumpListActivity extends Activity {
                 @Override
                 protected void onPostExecute(String result) {
                     mAdapter.notifyDataSetChanged();
-                    mRecyclerView.setAdapter(mAdapter);
+                    mRecyclerView.setAdapter(createSectionedAdapter(mAdapter, mJumpRecords));
+
+
+
+
                 }
 
             }.set(type, url, email, password, label);
             task.execute();
         }
+    }
+    private SimpleSectionedRecyclerViewAdapter createSectionedAdapter(JumpListAdapter adapter, ArrayList<JumpRecord> records) {
+        //This is the code to provide a sectioned list
+        List<SimpleSectionedRecyclerViewAdapter.Section> sections =
+                new ArrayList<SimpleSectionedRecyclerViewAdapter.Section>();
+        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.JAPAN); //SimpleDataFormat is not thread-safe. Don't make it static.
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yy/MM/dd (E)", Locale.JAPAN);
+
+        String date = "";
+        for (int i = 0; i < records.size(); i++) {
+            try {
+                Date d = sdf.parse(records.get(i).date);
+                Calendar cal1 = Calendar.getInstance();
+                cal1.setTime(d);
+                String dateStr = "";
+                dateStr = sdf2.format(cal1.getTime());
+
+                if (!date.equals(dateStr)) {
+                    date = dateStr;
+                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(i, dateStr));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //Add your adapter to the sectionAdapter
+        SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
+        SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
+                SimpleSectionedRecyclerViewAdapter(JumpListActivity.this,R.layout.section,R.id.section_text,adapter);
+        mSectionedAdapter.setSections(sections.toArray(dummy));
+
+        return mSectionedAdapter;
     }
 }
