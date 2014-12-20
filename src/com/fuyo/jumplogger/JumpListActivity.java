@@ -313,7 +313,7 @@ public class JumpListActivity extends Activity {
 
                 if (!date.equals(dateStr)) {
                     date = dateStr;
-                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(i, dateStr));
+                    sections.add(new SimpleSectionedRecyclerViewAdapter.Section(i, date, records.get(i).location));
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -323,7 +323,7 @@ public class JumpListActivity extends Activity {
         //Add your adapter to the sectionAdapter
         SimpleSectionedRecyclerViewAdapter.Section[] dummy = new SimpleSectionedRecyclerViewAdapter.Section[sections.size()];
         SimpleSectionedRecyclerViewAdapter mSectionedAdapter = new
-                SimpleSectionedRecyclerViewAdapter(JumpListActivity.this,R.layout.section,R.id.section_text,adapter);
+                SimpleSectionedRecyclerViewAdapter(JumpListActivity.this,R.layout.section,R.id.section_text, R.id.section_text_location,adapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
 
         return mSectionedAdapter;

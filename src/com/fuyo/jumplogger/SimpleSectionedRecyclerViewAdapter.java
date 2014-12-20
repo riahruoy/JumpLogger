@@ -19,17 +19,19 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     private boolean mValid = true;
     private int mSectionResourceId;
     private int mTextResourceId;
+    private int mTextResourceId2;
     private LayoutInflater mLayoutInflater;
     private RecyclerView.Adapter mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<Section>();
 
 
     public SimpleSectionedRecyclerViewAdapter(Context context, int sectionResourceId, int textResourceId,
-                                              RecyclerView.Adapter baseAdapter) {
+                                              int textResourceId2, RecyclerView.Adapter baseAdapter) {
 
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mSectionResourceId = sectionResourceId;
         mTextResourceId = textResourceId;
+        mTextResourceId2 = textResourceId2;
         mBaseAdapter = baseAdapter;
         mContext = context;
 
@@ -64,10 +66,12 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public static class SectionViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
+        public TextView title2;
 
-        public SectionViewHolder(View view,int mTextResourceid) {
+        public SectionViewHolder(View view,int mTextResourceid, int mTextResourceid2) {
             super(view);
             title = (TextView) view.findViewById(mTextResourceid);
+            title2 = (TextView) view.findViewById(mTextResourceid2);
         }
     }
 
@@ -75,7 +79,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
         if (typeView == SECTION_TYPE) {
             final View view = LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
-            return new SectionViewHolder(view,mTextResourceId);
+            return new SectionViewHolder(view,mTextResourceId, mTextResourceId2);
         }else{
             return mBaseAdapter.onCreateViewHolder(parent, typeView -1);
         }
@@ -85,6 +89,7 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
     public void onBindViewHolder(RecyclerView.ViewHolder sectionViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
             ((SectionViewHolder)sectionViewHolder).title.setText(mSections.get(position).title);
+            ((SectionViewHolder)sectionViewHolder).title2.setText(mSections.get(position).title2);
         }else{
             mBaseAdapter.onBindViewHolder(sectionViewHolder,sectionedPositionToPosition(position));
         }
@@ -103,14 +108,19 @@ public class SimpleSectionedRecyclerViewAdapter extends RecyclerView.Adapter<Rec
         int firstPosition;
         int sectionedPosition;
         CharSequence title;
+        CharSequence title2;
 
-        public Section(int firstPosition, CharSequence title) {
+        public Section(int firstPosition, CharSequence title, CharSequence title2) {
             this.firstPosition = firstPosition;
             this.title = title;
+            this.title2 = title2;
         }
 
         public CharSequence getTitle() {
             return title;
+        }
+        public CharSequence getTitle2() {
+            return title2;
         }
     }
 
