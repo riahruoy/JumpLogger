@@ -46,7 +46,7 @@ public class JumpRecord {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
         for (JumpRecord record : records) {
             writer.write(record.toString());
-            writer.write("\t");
+            writer.write("\n");
         }
         writer.close();
     }

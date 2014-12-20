@@ -148,7 +148,6 @@ public class JumpListAdapter extends RecyclerView.Adapter<JumpListAdapter.ViewHo
                                 };
                                 task.execute();
                                 notifyDataSetChanged();
-                                //TODO update
                             }
                         });
                         builder.setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
