@@ -111,16 +111,6 @@ public class JumpListActivity extends Activity {
 
 
 
-
-        // specify an adapter (see also next example)
-//        JumpRecord record = new JumpRecord();
-//        record.date = "2014-12-01 12:30:30";
-//        record.location = "Happo one ski resort";
-//        record.duration = 1.3462;
-//        for (int i = 0; i < 50; i++) {
-//            records.add(record);
-//        }
-
         mAdapter = new JumpListAdapter(mJumpRecords);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
@@ -149,7 +139,6 @@ public class JumpListActivity extends Activity {
             versionCode = pInfo.versionCode;
             versionName = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

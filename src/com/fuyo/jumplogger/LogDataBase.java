@@ -69,7 +69,6 @@ public class LogDataBase {
        	try {
 			logWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile, true)));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -133,7 +132,6 @@ public class LogDataBase {
 			try {
 				copyTransfer(logFilePath, fileName);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

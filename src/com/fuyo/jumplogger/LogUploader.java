@@ -147,7 +147,6 @@ public class LogUploader extends IntentService {
         } catch (NullPointerException e) {
 			// error;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         //send Broadcast to JumpListActivity
@@ -185,7 +184,6 @@ public class LogUploader extends IntentService {
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -232,7 +230,6 @@ public class LogUploader extends IntentService {
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -277,7 +274,6 @@ public class LogUploader extends IntentService {
 			is.close();
 			gzos.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
